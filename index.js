@@ -32,8 +32,8 @@ app.post('/submit-form', (req, res) => {
 });
 
 
-app.listen(3050, () => {
-  console.log('Server is running at 3050');
+app.listen(7280, () => {
+  console.log('Server is running at 7280');
 });
 
 function generateForm(name = '', email = '', message = '') {
