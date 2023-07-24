@@ -7,24 +7,7 @@ app.use(bodyParser.urlencoded({ extended: true })); //парсер для обр
 
 //на главную страницу
 app.get('/', (req, res) => {
-  res.send(`
-    <form method="POST" action="/submit-form">
-    
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name">
-      <br><br><br>
-           
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email">
-      <br><br><br>
-      
-      <label for="message">Message:</label>
-      <textarea id="message" name="message"></textarea>
-      <br><br><br>
-
-      <button type="submit">Submit</button>
-    </form>
-  `);
+  res.send(generateForm());
 });
 
 //обработка формы
@@ -35,24 +18,9 @@ app.post('/submit-form', (req, res) => {
 
   if (!name || !email || !message) {
     // Если хотя бы одно поле не заполнено, то возвращаем ошибку
-    res.send(`
-      <p>Error: Все поля обязательны для заполнения</p>
-      <form method="POST" action="/submit-form">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="${name || ''}">
-        <br><br><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="${email || ''}">
-        <br><br><br>
-
-        <label for="message">Message:</label>
-        <textarea id="message" name="message">${message || ''}</textarea>
-        <br><br><br>
-
-        <button type="submit">Submit</button>
-      </form>
-    `);
+    const errorText = `<p>Error: Все поля обязательны для заполнения</p>`;
+    const genForm = generateForm();
+    res.send(errorText+genForm);
   } else {
     // Если все поля заполнены, то отображаем данные
     res.send(`
@@ -64,6 +32,26 @@ app.post('/submit-form', (req, res) => {
 });
 
 
-app.listen(7280, () => {
-  console.log('Server is running at 7280');
+app.listen(3050, () => {
+  console.log('Server is running at 3050');
 });
+
+function generateForm(name = '', email = '', message = '') {
+  return `
+    <form method="POST" action="/submit-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="${name}">
+      <br><br><br>
+           
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="${email}">
+      <br><br><br>
+      
+      <label for="message">Message:</label>
+      <textarea id="message" name="message">${message}</textarea>
+      <br><br><br>
+
+      <button type="submit">Submit</button>
+    </form>
+  `;
+}
