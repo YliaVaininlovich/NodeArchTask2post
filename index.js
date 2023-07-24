@@ -19,7 +19,7 @@ app.post('/submit-form', (req, res) => {
   if (!name || !email || !message) {
     // Если хотя бы одно поле не заполнено, то возвращаем ошибку
     const errorText = `<p>Error: Все поля обязательны для заполнения</p>`;
-    const genForm = generateForm();
+    const genForm = generateForm(name, email, message);
     res.send(errorText+genForm);
   } else {
     // Если все поля заполнены, то отображаем данные
