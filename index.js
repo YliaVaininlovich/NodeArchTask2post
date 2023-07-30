@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true })); //парсер для обработки POST запросов
 
-let name ='', email='', message='';
-let errorName = '', errorEmail = '', errorMessage = '';
 
 //на главную страницу
 app.get('/', (req, res) => {
@@ -15,24 +13,22 @@ app.get('/', (req, res) => {
 
 //обработка формы
 app.post('/submit-form', (req, res) => {
-   name = req.body.name;
-   email = req.body.email;
-  message = req.body.message;
-  
+  const name = req.body.name;
+  const email = req.body.email;
+  const message = req.body.message;
+  let errorName = '', errorEmail = '', errorMessage = '';
+
   // Если хотя бы одно поле не заполнено, то возвращаем ошибку
   if (!name || !email || !message) { 
     if (!name) errorName = `Error: Не заполнено имя`; else errorName = "";
     if (!email) errorEmail = `Error: Не заполнен адрес электронной почты`; else errorEmail = "";
     if (!message) errorMessage = `Error: Нет комментариев`; else errorMessage = "";
-    res.send(generateForm());
+    res.send(generateForm(name, email, message, errorName, errorEmail, errorMessage));
 
   }
-  else {
-    errorName = '';
-    errorEmail = '';
-    errorMessage = '';
-    
-    res.redirect(301, `/submit-result`);
+  else {  
+    errorName = ''; errorEmail = ''; errorMessage = '';
+    res.redirect(301, `/submit-result?name=${name}&email=${email}&message=${message}`);
   }
   
 });
@@ -40,9 +36,9 @@ app.post('/submit-form', (req, res) => {
 //правильно заполненная форма
 app.get('/submit-result', (req, res) => {
   res.send(`
-  <p>Name: ${name}</p>
-  <p>Email: ${email}</p>
-  <p>Message: ${message}</p>
+  <p>Name: ${req.query.name}</p>
+  <p>Email: ${req.query.email}</p>
+  <p>Message: ${req.query.message}</p>
 `);
 }
 );
@@ -51,7 +47,7 @@ app.listen(7280, () => {
   console.log('Server is running at 7280');
 });
 
-function generateForm() {
+function generateForm(name="", email="", message="", errorName='', errorEmail='', errorMessage='') {
  
   return `
     <form method="POST" action="/submit-form" id="my-form">
